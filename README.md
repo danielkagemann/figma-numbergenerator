@@ -10,4 +10,4 @@ Additionally you can define the ordering.
 
 If you do not like UI configuration and love to speed up using parameters you can do so.
 
-![](_screenshots/parameter.png_)
+![](_screenshots/parameter.png)
