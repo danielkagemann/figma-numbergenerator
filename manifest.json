@@ -14,5 +14,22 @@
       "none"
     ]
   },
-  "documentAccess": "dynamic-page"
+  "documentAccess": "dynamic-page",
+  "parameterOnly": false,
+  "parameters": [
+    {
+      "name": "Start from",
+      "key": "from",
+      "allowFreeform": true
+    },
+    {
+      "name": "until",
+      "key": "to",
+      "allowFreeform": true
+    },
+    {
+      "name": "Order",
+      "key": "options"
+    }
+  ]
 }

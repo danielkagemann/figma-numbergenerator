@@ -12,32 +12,36 @@ const $Number = {
   }
 };
 
-// This shows the HTML page in "ui.html".
-figma.showUI(__html__, {height:280});
+type NumberParameter = {
+  from:number,
+  to:number,
+  options: string
+}
 
-// check textnodes
-const nodes = figma.currentPage.selection.filter(item=>item.type === "TEXT")
+/**
+ * helper routine to get all textnodes
+ * @returns 
+ */
+const getNodes = (): SceneNode[] => {
+  return figma.currentPage.selection.filter(item=>item.type === "TEXT");
+};
 
-if (nodes.length === 0) {
-  figma.ui.close()
-  figma.closePlugin()
-  figma.notify("Please select some textnodes and define your range");  
-} 
-
-figma.ui.onmessage = async (range) => {
-
-  if (range.length !== 3) {
-    figma.closePlugin()
-  }
-
+/**
+ * do the main job
+ * @param data
+ * @param shouldClose
+ */
+const processing = async ({from, to, options}: NumberParameter, shouldClose = false) => {
   await figma.loadFontAsync({ family: "Inter", style: "Regular" })
 
-  // walk through all textnodes and do some magic
-  const list = $Number.getChunks(nodes.length, range[0], range[1])
+  const nodes = getNodes()
 
-  if (range[2] === 'asc') {
+  // walk through all textnodes and do some magic
+  const list = $Number.getChunks(nodes.length, from, to)
+
+  if (options === 'asc') {
     list.sort( (a,b) => a - b);
-  } else if (range[2] === 'desc') {
+  } else if (options === 'desc') {
     list.sort( (a,b) => b - a);
   } else {
     list
@@ -50,6 +54,63 @@ figma.ui.onmessage = async (range) => {
     (node as TextNode).characters = list[index].toString()
   });
 
-  figma.viewport.scrollAndZoomIntoView(nodes);
+  if (shouldClose) {
+    figma.closePlugin();
+  }
 }
+
+/**
+ * listener for parameter input
+ * handle the suggestions for parameters
+ */
+figma.parameters.on(
+  'input',
+  ({ key, query, result }: ParameterInputEvent) => {
+    switch (key) {
+      case 'options':
+        result.setSuggestions(['asc', 'desc', 'random'].filter(s => s.includes(query)))
+        break
+      default:
+        return
+    }
+  }
+)
+
+/**
+ * listener for ui call
+ * @param range
+ */
+figma.ui.onmessage = async (range) => {
+
+  if (range.length !== 3) {
+    figma.closePlugin()
+  }
+  processing({from: range[0], to: range[1], options: range[2]})
+}
+
+/**
+ * listener for running
+ */
+figma.on('run', ({ parameters }: RunEvent) => {
+  // check textnodes
+  const nodes = figma.currentPage.selection.filter(item=>item.type === "TEXT")
+  if (nodes.length === 0) {
+    figma.closePlugin()
+    figma.notify("Please select some textnodes and define your range");  
+    return
+  }
+
+  // start the UI
+  if (parameters === undefined) {
+      figma.showUI(__html__, {height:280});
+  } else {
+    processing({
+      from: Number(parameters.from), 
+      to: Number(parameters.to), 
+      options: parameters.options
+    }, true);
+  }
+})
+
+
 
