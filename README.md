@@ -18,7 +18,7 @@ Support for light and darkmode
 
 ## changelog
 
-#### version 1.1
+#### version 2
 
 * support for system appearance (light, dark)
 
