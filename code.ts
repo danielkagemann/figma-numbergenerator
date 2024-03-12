@@ -27,6 +27,29 @@ const getNodes = (): SceneNode[] => {
 };
 
 /**
+ * walk through textnodes and calculate the amount of numbers
+ * @param nodes 
+ */
+const getRequiredNumbers = (nodes: SceneNode[]): number => {
+  let amount = 0;
+  nodes.forEach (node => {
+    let count = 0;
+    (node as TextNode).characters.replace(/\d+/g, match => {
+      count += 1
+      return match
+    });
+  
+    // at least we have one for the whole textnode 
+    if (count === 0) {
+      count += 1
+    }
+    amount += count
+  });
+
+  return amount
+};
+
+/**
  * do the main job
  * @param data
  * @param shouldClose
@@ -102,7 +125,7 @@ figma.on('run', ({ parameters }: RunEvent) => {
 
   // start the UI
   if (parameters === undefined) {
-      figma.showUI(__html__, {height:280});
+      figma.showUI(__html__, { themeColors: true, height:260 });
   } else {
     processing({
       from: Number(parameters.from), 

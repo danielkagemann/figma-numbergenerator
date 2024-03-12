@@ -11,3 +11,17 @@ Additionally you can define the ordering.
 If you do not like UI configuration and love to speed up using parameters you can do so.
 
 ![](_screenshots/parameter.png)
+
+Support for light and darkmode
+
+![](./_screenshots/dark.png)
+
+## changelog
+
+#### version 1.1
+
+* support for system appearance (light, dark)
+
+#### version 1
+
+* initial version with support for UI and parameters
