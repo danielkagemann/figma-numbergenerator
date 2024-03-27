@@ -18,6 +18,10 @@ Support for light and darkmode
 
 ## changelog
 
+#### version 3
+
+* fixed font issue
+
 #### version 2
 
 * support for system appearance (light, dark)

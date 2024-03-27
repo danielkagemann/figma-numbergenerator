@@ -55,12 +55,13 @@ const getRequiredNumbers = (nodes: SceneNode[]): number => {
  * @param shouldClose
  */
 const processing = async ({from, to, options}: NumberParameter, shouldClose = false) => {
-  await figma.loadFontAsync({ family: "Inter", style: "Regular" })
+  const fontFamily = { family: "Inter", style: "Regular" };
+  await figma.loadFontAsync(fontFamily);
 
-  const nodes = getNodes()
+  const nodes = getNodes();
 
   // walk through all textnodes and do some magic
-  const list = $Number.getChunks(nodes.length, from, to)
+  const list = $Number.getChunks(nodes.length, from, to);
 
   if (options === 'asc') {
     list.sort( (a,b) => a - b);
@@ -70,10 +71,11 @@ const processing = async ({from, to, options}: NumberParameter, shouldClose = fa
     list
       .map(value => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value)
+      .map(({ value }) => value);
   }
 
   nodes.forEach((node: SceneNode, index: number) => {
+    (node as TextNode).fontName = fontFamily;
     (node as TextNode).characters = list[index].toString()
   });
 
